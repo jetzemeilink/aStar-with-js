@@ -1,0 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100vw;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.display-grid {
+  display: flex;
+  flex-wrap: wrap;
+  width: 500px;
+  height: 500px;
+}
+
+.tile {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #000;
+}
+
+.green {
+  border: 1px solid green;
+  background: rgb(149, 196, 149);
+}
+
+.orangered {
+  border: 1px solid orangered;
+}

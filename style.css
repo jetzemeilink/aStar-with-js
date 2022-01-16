@@ -6,11 +6,11 @@
 
 .container {
   width: 100vw;
-  height: 80vh;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-
+  background: grey;
 }
 
 .display-grid {
@@ -26,11 +26,23 @@
   border: 1px solid #000;
 }
 
+.wall {
+  background: black;
+}
+
 .green {
   border: 1px solid green;
   background: rgb(149, 196, 149);
 }
 
+.finish {
+  background: red;
+}
+
 .orangered {
   border: 1px solid orangered;
+}
+
+.path {
+  background:indigo
 }

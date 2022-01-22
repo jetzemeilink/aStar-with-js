@@ -9,9 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 //  vars
-const cols = 10;
-const rows = 10;
+const cols = 100;
+const rows = 100;
 const displayGrid = document.querySelector('.display-grid');
+const startBtn = document.querySelector('.start');
 const grid = new Array(cols);
 const openSet = [];
 const closedSet = [];
@@ -19,7 +20,7 @@ let start;
 let end;
 let divList = [];
 let finish = false;
-// event listeners
+// event listeners  
 document.addEventListener('DOMContentLoaded', createAStarAlg);
 class Tile {
     constructor(id, col, row, isWall) {
@@ -33,17 +34,37 @@ class Tile {
         this.isWall = isWall;
     }
     addNeighbors() {
+        if (this.col > 0) {
+            this.neighbors.push(grid[this.col - 1][this.row]);
+        }
+        if (this.col < cols - 1) {
+            this.neighbors.push(grid[this.col + 1][this.row]);
+        }
         if (this.row > 0) {
             this.neighbors.push(grid[this.col][this.row - 1]);
         }
         if (this.row < rows - 1) {
             this.neighbors.push(grid[this.col][this.row + 1]);
         }
-        if (this.col > 0) {
-            this.neighbors.push(grid[this.col - 1][this.row]);
+        if (this.col > 0 && this.row > 0) { //NW
+            if (!(grid[this.col - 1][this.row].isWall || grid[this.col][this.row - 1].isWall)) {
+                this.neighbors.push(grid[this.col - 1][this.row - 1]);
+            }
         }
-        if (this.col < cols - 1) {
-            this.neighbors.push(grid[this.col + 1][this.row]);
+        if (this.col < cols - 1 && this.row < rows - 1) { //SE
+            if (!(grid[this.col + 1][this.row].isWall || grid[this.col][this.row + 1].isWall)) {
+                this.neighbors.push(grid[this.col + 1][this.row + 1]);
+            }
+        }
+        if (this.col < cols - 1 && this.row > 0) { //NE
+            if (!(grid[this.col + 1][this.row].isWall || grid[this.col][this.row - 1].isWall)) {
+                this.neighbors.push(grid[this.col + 1][this.row - 1]);
+            }
+        }
+        if (this.col > 0 && this.row < cols - 1) { //SW
+            if (!(grid[this.col - 1][this.row].isWall || grid[this.col][this.row + 1].isWall)) {
+                this.neighbors.push(grid[this.col - 1][this.row + 1]);
+            }
         }
     }
 }
@@ -79,24 +100,29 @@ function createAStarAlg() {
                 const neighbors = current.neighbors;
                 for (let i = 0; i < neighbors.length; i++) {
                     const neighbor = neighbors[i];
+                    let newPath = false;
                     if (!closedSet.includes(neighbor) && !neighbor.isWall) {
+                        updateGrid(neighbor.id);
                         let tempG = current.g + 1;
                         if (openSet.includes(neighbor)) {
                             if (tempG < neighbor.g) {
                                 neighbor.g = tempG;
+                                newPath = true;
                             }
                         }
                         else {
                             neighbor.g = tempG;
+                            newPath = true;
                             openSet.push(neighbor);
                         }
-                        neighbor.h = heuristic(neighbor, end);
-                        neighbor.f = neighbor.g + neighbor.h;
-                        neighbor.previous = current;
+                        if (newPath) {
+                            neighbor.h = heuristic(neighbor, end);
+                            neighbor.f = neighbor.g + neighbor.h;
+                            neighbor.previous = current;
+                        }
                     }
                 }
-                updateGrid(current.id);
-                yield sleep(1);
+                yield sleep(100);
             }
         }
         else {
@@ -154,6 +180,7 @@ function sleep(ms) {
 function getPath(tile) {
     return __awaiter(this, void 0, void 0, function* () {
         yield sleep(30);
+        divList[tile.id].classList.remove('green');
         divList[tile.id].classList.add("path");
         const newTile = tile.previous;
         if (newTile) {

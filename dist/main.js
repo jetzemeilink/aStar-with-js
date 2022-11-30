@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 //  vars
 const cols = 100;
 const rows = 100;
@@ -68,67 +59,65 @@ class Tile {
         }
     }
 }
-function createAStarAlg() {
-    return __awaiter(this, void 0, void 0, function* () {
-        for (let i = 0; i < cols; i++) {
-            grid[i] = new Array(rows);
-        }
-        setTiles();
-        drawGrid();
-        start = grid[0][0];
-        end = grid[cols - 1][rows - 1];
-        openSet.push(start);
-        // search path
-        if (openSet.length > 0) {
-            while (!finish) {
-                let winner = 0;
-                for (let i = 0; i < openSet.length; i++) {
-                    if (openSet[i].f < openSet[winner].f) {
-                        winner = i;
-                    }
+async function createAStarAlg() {
+    for (let i = 0; i < cols; i++) {
+        grid[i] = new Array(rows);
+    }
+    setTiles();
+    drawGrid();
+    start = grid[0][0];
+    end = grid[cols - 1][rows - 1];
+    openSet.push(start);
+    // search path
+    if (openSet.length > 0) {
+        while (!finish) {
+            let winner = 0;
+            for (let i = 0; i < openSet.length; i++) {
+                if (openSet[i].f < openSet[winner].f) {
+                    winner = i;
                 }
-                let current = openSet[winner];
-                if (current === end) {
-                    finish = true;
-                    divList[current.id].classList.add("finish");
-                    getPath(current);
-                    return;
-                }
-                removeFromArray(openSet, current);
-                closedSet.push(current);
-                // get neighbors
-                const neighbors = current.neighbors;
-                for (let i = 0; i < neighbors.length; i++) {
-                    const neighbor = neighbors[i];
-                    let newPath = false;
-                    if (!closedSet.includes(neighbor) && !neighbor.isWall) {
-                        updateGrid(neighbor.id);
-                        let tempG = current.g + 1;
-                        if (openSet.includes(neighbor)) {
-                            if (tempG < neighbor.g) {
-                                neighbor.g = tempG;
-                                newPath = true;
-                            }
-                        }
-                        else {
+            }
+            let current = openSet[winner];
+            if (current === end) {
+                finish = true;
+                divList[current.id].classList.add("finish");
+                getPath(current);
+                return;
+            }
+            removeFromArray(openSet, current);
+            closedSet.push(current);
+            // get neighbors
+            const neighbors = current.neighbors;
+            for (let i = 0; i < neighbors.length; i++) {
+                const neighbor = neighbors[i];
+                let newPath = false;
+                if (!closedSet.includes(neighbor) && !neighbor.isWall) {
+                    updateGrid(neighbor.id);
+                    let tempG = current.g + 1;
+                    if (openSet.includes(neighbor)) {
+                        if (tempG < neighbor.g) {
                             neighbor.g = tempG;
                             newPath = true;
-                            openSet.push(neighbor);
-                        }
-                        if (newPath) {
-                            neighbor.h = heuristic(neighbor, end);
-                            neighbor.f = neighbor.g + neighbor.h;
-                            neighbor.previous = current;
                         }
                     }
+                    else {
+                        neighbor.g = tempG;
+                        newPath = true;
+                        openSet.push(neighbor);
+                    }
+                    if (newPath) {
+                        neighbor.h = heuristic(neighbor, end);
+                        neighbor.f = neighbor.g + neighbor.h;
+                        neighbor.previous = current;
+                    }
                 }
-                yield sleep(100);
             }
+            await sleep(100);
         }
-        else {
-            console.log("No solution");
-        }
-    });
+    }
+    else {
+        console.log("No solution");
+    }
 }
 ;
 function setTiles() {
@@ -177,14 +166,12 @@ function heuristic(pointA, pointB) {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-function getPath(tile) {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield sleep(30);
-        divList[tile.id].classList.remove('green');
-        divList[tile.id].classList.add("path");
-        const newTile = tile.previous;
-        if (newTile) {
-            getPath(newTile);
-        }
-    });
+async function getPath(tile) {
+    await sleep(30);
+    divList[tile.id].classList.remove('green');
+    divList[tile.id].classList.add("path");
+    const newTile = tile.previous;
+    if (newTile) {
+        getPath(newTile);
+    }
 }

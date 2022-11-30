@@ -8,22 +8,24 @@
   width: 100vw;
   height: 100vh;
   display: flex;
-  flex-direction:  column;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background: #fff;
+
 }
 
 .display-grid {
   display: flex;
   flex-wrap: wrap;
-  width: 500px;
-  height: 500px;
+  align-content: center;
+  width: 800px;
+  height: 800px;
 }
 
 .tile {
-  width: 5px;
-  height: 5px;
+  width: 40px;
+  height: 40px;
   border: 1px solid #000;
 }
 

@@ -1,7 +1,7 @@
 "use strict";
 //  vars
-const cols = 100;
-const rows = 100;
+const cols = 20;
+const rows = 20;
 const displayGrid = document.querySelector('.display-grid');
 const startBtn = document.querySelector('.start');
 const grid = new Array(cols);
